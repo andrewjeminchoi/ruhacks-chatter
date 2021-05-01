@@ -1,7 +1,22 @@
 var app = require('express')();
+let dotenv = require('dotenv');
 var http = require('http').createServer(app);
-const PORT = 8080;
 var io = require('socket.io')(http);
+const { Client } = require("cassandra-driver");
+ 
+dotenv.config({ path: '.env' }); 
+
+const PORT = 8080;
+const client = new Client({
+    cloud: {
+      secureConnectBundle: "secure-connect-gcp2021.zip",
+    },
+    credentials: {
+      username: process.env.CLIENT_ID,
+      password: process.env.CLIENT_SECRET,
+    },
+});
+
 var STATIC_CHANNELS = [{
     name: 'Turbo Pottery 101',
     participants: 0,
@@ -19,13 +34,12 @@ app.use((req, res, next) => {
     next();
 })
 
-
 http.listen(PORT, () => {
     console.log(`listening on *:${PORT}`);
 });
 
 io.on('connection', (socket) => { 
-    console.log('new client connected');
+    console.log(`new client connected`);
     socket.emit('connection', null);
     socket.on('channel-join', id => {
         console.log('channel join', id);
@@ -51,6 +65,15 @@ io.on('connection', (socket) => {
     socket.on('send-message', message => {
         console.log(message);
         io.emit('message', message);
+        client.connect()
+        .then(function () {
+            const query = `INSERT INTO messages.msg (id, channel, msg, sender) VALUES (?,?,?,?)`;
+            const params = [message.id, message.channel_id, message.text, message.senderName];
+            return client.execute(query, params, { prepare: true});
+        });
+        // client.connect().then(function () {return client.execute("SELECT * FROM messages.msg");}).then(function (result) {console.log(`Your cluster returned ${result.rowLength} row(s)`);});
+        // const rs = client.execute("SELECT * FROM test.tester");
+        // console.log(`Your cluster returned ${rs.rowLength} row(s)`);
     });
 
     socket.on('disconnect', () => {
@@ -62,11 +85,10 @@ io.on('connection', (socket) => {
                 io.emit('channel', c);
             }
         });
+        client.shutdown();
     });
 
 });
-
-
 
 /**
  * @description This method retrieves the static channels

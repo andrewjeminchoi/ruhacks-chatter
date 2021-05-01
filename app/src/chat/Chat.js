@@ -3,9 +3,9 @@ import { ChannelList } from './ChannelList';
 import './chat.scss';
 import { MessagesPanel } from './MessagesPanel';
 import socketClient from "socket.io-client";
+
+// CHANGE ME : On deployment
 const SERVER = "http://localhost:8080";
-
-
 
 export class Chat extends React.Component {
 
