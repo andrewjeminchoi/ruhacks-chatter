@@ -19,7 +19,7 @@ function generateHash(string) {
 
 function generateName(string) {
     var hash = generateHash(string);
-    return Math.abs(hash) % NAMES.length; 
+    return Math.abs(hash) % NAMES.length;
 }
 
 function generateColor(string) {
@@ -29,12 +29,12 @@ function generateColor(string) {
 }
 
 export class Message extends React.Component {
-    
+
     render() {
         return (
             <div className='message-item'>
-                <div style={generateColor(this.props.senderName)}><b>{NAMES[generateName(this.props.senderName)]}</b></div>
-                <span>{this.props.text}</span>
+                <div style={generateColor(this.props.senderName)} className='name'><b>{NAMES[generateName(this.props.senderName)]}</b></div>
+                <span className='msg'>{this.props.text}</span>
             </div>
         )
     }
