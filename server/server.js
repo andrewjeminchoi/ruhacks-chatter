@@ -85,10 +85,11 @@ io.on('connection', (socket) => {
                 io.emit('channel', c);
             }
         });
-        client.shutdown();
     });
 
 });
+
+client.shutdown();
 
 /**
  * @description This method retrieves the static channels

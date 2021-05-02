@@ -6,6 +6,7 @@ import socketClient from "socket.io-client";
 
 // CHANGE ME : On deployment
 const SERVER = "http://localhost:8080";
+// const SERVER = "http://34.66.210.81:8080";
 
 export class Chat extends React.Component {
 
@@ -55,6 +56,7 @@ export class Chat extends React.Component {
     }
 
     loadChannels = async () => {
+        //fetch('http://34.66.210.81:8080/getChannels').then(async response => {
         fetch('http://localhost:8080/getChannels').then(async response => {
             let data = await response.json();
             this.setState({ channels: data.channels });
