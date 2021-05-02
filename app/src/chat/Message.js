@@ -33,7 +33,7 @@ export class Message extends React.Component {
     render() {
         return (
             <div className='message-item'>
-                <div style={generateColor(this.props.senderName)}><b>{NAMES[generateHash(this.props.senderName)]}</b></div>
+                <div style={generateColor(this.props.senderName)}><b>{NAMES[generateName(this.props.senderName)]}</b></div>
                 <span>{this.props.text}</span>
             </div>
         )
