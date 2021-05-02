@@ -40,10 +40,10 @@
     }
 
     .messages-panel {
-        width: calc(80% - 12px);
+        width: calc(30% - 12px);
         border: 1px solid rgb(224, 224, 224);
         margin: 10px;
-        margin-left: 0;
+        margin-left: 10px;
         height: calc(100% - 22px);
         display: flex;
         flex-direction: column;

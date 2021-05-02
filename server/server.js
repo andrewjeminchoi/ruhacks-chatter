@@ -71,8 +71,6 @@ io.on('connection', (socket) => {
             const params = [message.id, message.channel_id, message.text, message.senderName];
             return client.execute(query, params, { prepare: true});
         });
-        // client.connect().then(function () {return client.execute("SELECT * FROM messages.msg");}).then(function (result) {console.log(`Your cluster returned ${result.rowLength} row(s)`);});
-        // const rs = client.execute("SELECT * FROM test.tester");
         // console.log(`Your cluster returned ${rs.rowLength} row(s)`);
     });
 
