@@ -17,18 +17,14 @@ const client = new Client({
     },
 });
 
-var STATIC_CHANNELS = [{
+var STATIC_CHANNEL = [{
     name: 'Turbo Pottery 101',
     participants: 0,
     id: 1,
     sockets: []
-}, {
-    name: 'Origami with Egg',
-    participants: 0,
-    id: 2,
-    sockets: []
-}];
+},];
 
+// CORS Headers
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     next();
@@ -43,23 +39,15 @@ io.on('connection', (socket) => {
     socket.emit('connection', null);
     socket.on('channel-join', id => {
         console.log('channel join', id);
-        STATIC_CHANNELS.forEach(c => {
-            if (c.id === id) {
-                if (c.sockets.indexOf(socket.id) == (-1)) {
-                    c.sockets.push(socket.id);
-                    c.participants++;
-                    io.emit('channel', c);
-                }
-            } else {
-                let index = c.sockets.indexOf(socket.id);
-                if (index != (-1)) {
-                    c.sockets.splice(index, 1);
-                    c.participants--;
-                    io.emit('channel', c);
-                }
-            }
-        });
-
+        var c = STATIC_CHANNEL[0];
+        console.log(c)
+        if (!c.sockets) {
+            c.sockets = [socket.id]
+        } else {
+            c.sockets.push(socket.id);
+        }
+        c.participants++;
+        io.emit('channel', c);
         return id;
     });
     socket.on('send-message', message => {
@@ -75,25 +63,16 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
-        STATIC_CHANNELS.forEach(c => {
-            let index = c.sockets.indexOf(socket.id);
-            if (index != (-1)) {
-                c.sockets.splice(index, 1);
-                c.participants--;
-                io.emit('channel', c);
-            }
-        });
+        var c = STATIC_CHANNEL[0];
+        console.log(c.participants)
+        let index = c.sockets.indexOf(socket.id);
+        if (index != (-1)) {
+            c.sockets.splice(index, 1);
+            c.participants--;
+            io.emit('channel', c);
+        }
     });
 
 });
 
 client.shutdown();
-
-/**
- * @description This method retrieves the static channels
- */
-app.get('/getChannels', (req, res) => {
-    res.json({
-        channels: STATIC_CHANNELS
-    })
-});
